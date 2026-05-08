@@ -28,18 +28,18 @@ A professional full-stack web application built with Python Flask to analyze res
 
 ## Screenshots
 
-![Screenshot](screenshots/1.png)
+![Screenshot](screenshot/1.png)
 
-![Screenshot](screenshots/2.png)
+![Screenshot](screenshot/2.png)
 
-![Screenshot](screenshots/3.png)
+![Screenshot](screenshot/3.png)
 
-![Screenshot](screenshots/4.png)
+![Screenshot](screenshot/4.png)
 
-![Screenshot](screenshots/5.png)
+![Screenshot](screenshot/5.png)
 
-![Screenshot](screenshots/6.png)
+![Screenshot](screenshot/6.png)
 
-![Screenshot](screenshots/7.png)
+![Screenshot](screenshot/7.png)
 
-![Screenshot](screenshots/8.png)
+![Screenshot](screenshot/8.png)
