@@ -24,3 +24,22 @@ A professional full-stack web application built with Python Flask to analyze res
 - **Backend**: Flask, Scikit-learn, pdfplumber
 - **Frontend**: HTML5, CSS3 (Vanilla), JavaScript
 - **NLP**: TF-IDF Vectorization, Regex-based skill extraction
+
+
+## Screenshots
+
+![Screenshot](screenshots/1.png)
+
+![Screenshot](screenshots/2.png)
+
+![Screenshot](screenshots/3.png)
+
+![Screenshot](screenshots/4.png)
+
+![Screenshot](screenshots/5.png)
+
+![Screenshot](screenshots/6.png)
+
+![Screenshot](screenshots/7.png)
+
+![Screenshot](screenshots/8.png)
