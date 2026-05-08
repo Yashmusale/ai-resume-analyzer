@@ -26,20 +26,21 @@ A professional full-stack web application built with Python Flask to analyze res
 - **NLP**: TF-IDF Vectorization, Regex-based skill extraction
 
 
-## Screenshots
 
-![Screenshot](screenshot/1.png)
+## Screenshot
 
-![Screenshot](screenshot/2.png)
+![](ss/1.png)
 
-![Screenshot](screenshot/3.png)
+![](ss/2.png)
 
-![Screenshot](screenshot/4.png)
+![](ss/3.png)
 
-![Screenshot](screenshot/5.png)
+![](ss/4.png)
 
-![Screenshot](screenshot/6.png)
+![](ss/5.png)
 
-![Screenshot](screenshot/7.png)
+![](ss/6.png)
 
-![Screenshot](screenshot/8.png)
+![](ss/7.png)
+
+![](ss/8.png)
