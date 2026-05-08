@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Career Dashboard - Premium Resume Suite</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-brand" style="display: flex; align-items: center; gap: 0.75rem;">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="width: 32px;">
+            <span>AI Resume Analyzer</span>
+        </div>
+        <a class="nav-item active" data-section="analyzer">
+            <span>Analyzer</span>
+        </a>
+        <a class="nav-item" data-section="rewriter">
+            <span>Resume Rewriter</span>
+        </a>
+        <a class="nav-item" data-section="interview">
+            <span>Interview Prep</span>
+        </a>
+        <a class="nav-item" data-section="tracker">
+            <span>Job Tracker</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <header>
+            <h1 id="section-title">Resume Analyzer</h1>
+            <div id="status-badge"
+                style="font-size: 0.8rem; padding: 0.4rem 1rem; border-radius: 2rem; background: rgba(16, 185, 129, 0.1); color: var(--accent); display: none;">
+                Analysis Complete</div>
+        </header>
+
+        <!-- Section: Analyzer -->
+        <div id="analyzer" class="section active">
+            <div class="grid-2">
+                <div class="left-col">
+                    <div class="card">
+                        <h2>Upload Resume</h2>
+                        <div class="form-group">
+                            <div class="upload-area" id="drop-zone"
+                                onclick="document.getElementById('resume-input').click()"
+                                style="border: 2px dashed #334155; padding: 3rem; text-align: center; border-radius: 1rem; cursor: pointer;">
+                                <p id="file-name" style="color: var(--text-muted);">Drop your PDF here or click to
+                                    browse</p>
+                                <input type="file" id="resume-input" accept=".pdf" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h2>Job Details</h2>
+                        <div class="form-group">
+                            <label>Target Role</label>
+                            <select id="role-select">
+                                <option value="Default">General / Other</option>
+                                <option value="Data Analyst">Data Analyst</option>
+                                <option value="AI Engineer">AI Engineer</option>
+                                <option value="Backend Developer">Backend Developer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Job Description</label>
+                            <textarea id="jd-input" placeholder="Paste JD here..." style="height: 150px;"></textarea>
+                        </div>
+                        <button class="btn btn-primary" id="analyze-btn" style="width: 100%;">Start AI Analysis</button>
+                    </div>
+                </div>
+
+                <div class="right-col">
+                    <div class="card" id="results-card">
+                        <h2>Analysis Overview</h2>
+                        <div id="results-placeholder" style="text-align: center; padding: 4rem 0;">
+                            <div id="loading-spinner" style="display: none; margin-bottom: 1rem;">
+                                <div
+                                    style="border: 4px solid rgba(255,255,255,0.1); border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;">
+                                </div>
+                                <p style="margin-top: 1rem;">AI is analyzing your profile...</p>
+                            </div>
+                            <p id="placeholder-text" style="color: var(--text-muted);">Results will appear after
+                                analysis</p>
+                        </div>
+                        <div id="results-content" style="display: none;">
+                            <div style="display: flex; gap: 2rem; margin-bottom: 2rem;">
+                                <div style="flex: 1; text-align: center;">
+                                    <div id="match-circle" class="score-circle" data-score="0" style="--progress: 0deg">
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted);">Match Score</p>
+                                </div>
+                                <div style="flex: 1; text-align: center;">
+                                    <div id="ats-circle" class="score-circle" data-score="0" style="--progress: 0deg">
+                                    </div>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted);">ATS Score</p>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 1.5rem;">
+                                <h3>Keywords Found</h3>
+                                <div id="resume-skills" style="margin-top: 0.5rem;"></div>
+                            </div>
+                            <div style="margin-bottom: 1.5rem;">
+                                <h3>Missing Keywords</h3>
+                                <div id="missing-skills" style="margin-top: 0.5rem;"></div>
+                            </div>
+                            <button class="btn btn-secondary" id="download-btn" style="width: 100%;">Download PDF
+                                Report</button>
+                        </div>
+                    </div>
+                    <div class="card" id="ai-feedback-card" style="display: none;">
+                        <h2>Strategic Feedback</h2>
+                        <div id="ai-feedback" class="ai-feedback-box"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Resume Rewriter -->
+        <div id="rewriter" class="section">
+            <div class="card">
+                <h2>AI Resume Rewriter</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Enhance your professional summary and
+                    experience bullet points using AI.</p>
+                <button class="btn btn-primary" id="rewrite-btn" disabled>Generate Improved Version</button>
+                <div id="rewrite-container" style="margin-top: 2rem; display: none;">
+                    <div id="rewritten-content" class="ai-feedback-box" style="border-left-color: var(--accent);"></div>
+                </div>
+                <div id="rewrite-empty" style="text-align: center; padding: 4rem 0;">
+                    <p style="color: var(--text-muted);">Please perform an analysis first to unlock rewriting.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Interview Prep -->
+        <div id="interview" class="section">
+            <div class="card">
+                <h2>Interview Question Generator</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Get targeted Technical, HR, and Project
+                    questions based on your profile.</p>
+                <button class="btn btn-primary" id="questions-btn" disabled>Generate Practice Questions</button>
+                <div id="questions-container" style="margin-top: 2rem; display: none;">
+                    <div id="questions-content" class="ai-feedback-box" style="border-left-color: var(--warning);">
+                    </div>
+                </div>
+                <div id="interview-empty" style="text-align: center; padding: 4rem 0;">
+                    <p style="color: var(--text-muted);">Please perform an analysis first to unlock interview prep.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Job Tracker -->
+        <div id="tracker" class="section">
+            <div class="card">
+                <h2>Add New Application</h2>
+                <form id="job-form" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem;">
+                    <input type="text" id="comp-name" placeholder="Company" required>
+                    <input type="text" id="role-name" placeholder="Role" required>
+                    <select id="job-status">
+                        <option value="Applied">Applied</option>
+                        <option value="Interview">Interview</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Offer">Offer</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Add Job</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>Application Pipeline</h2>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Role</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jobs-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <!-- <div style="margin-bottom: 1rem;">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="width: 30px; opacity: 0.8;">
+            </div> -->
+            <p>Made with ❤️ by <a href="https://github.com/Yashmusale" target="_blank">Yash Musale</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // UI Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.section');
+        const sectionTitle = document.getElementById('section-title');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+
+                const target = item.getAttribute('data-section');
+                sections.forEach(s => s.classList.remove('active'));
+                document.getElementById(target).classList.add('active');
+
+                sectionTitle.textContent = item.querySelector('span').textContent;
+            });
+        });
+
+        // Application Logic
+        const resumeInput = document.getElementById('resume-input');
+        const jdInput = document.getElementById('jd-input');
+        const roleSelect = document.getElementById('role-select');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const rewriteBtn = document.getElementById('rewrite-btn');
+        const questionsBtn = document.getElementById('questions-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const fileName = document.getElementById('file-name');
+
+        let currentResumeText = '';
+        let lastAnalysisResult = null;
+
+        resumeInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                fileName.textContent = e.target.files[0].name;
+                fileName.style.color = '#10b981';
+            }
+        });
+
+        analyzeBtn.addEventListener('click', async () => {
+            const file = resumeInput.files[0];
+            const jd = jdInput.value;
+            const role = roleSelect.value;
+
+            if (!file || !jd) {
+                alert('Upload resume and paste JD first');
+                return;
+            }
+
+            analyzeBtn.textContent = 'Processing...';
+            analyzeBtn.disabled = true;
+            document.getElementById('loading-spinner').style.display = 'block';
+            document.getElementById('placeholder-text').style.display = 'none';
+            document.getElementById('results-content').style.display = 'none';
+            document.getElementById('ai-feedback-card').style.display = 'none';
+            document.getElementById('status-badge').style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('resume', file);
+            formData.append('jd', jd);
+            formData.append('role', role);
+
+            try {
+                const response = await fetch('/analyze', { method: 'POST', body: formData });
+                const data = await response.json();
+
+                if (data.error) alert(data.error);
+                else {
+                    lastAnalysisResult = data;
+                    currentResumeText = data.resume_text;
+                    displayResults(data);
+
+                    // Unlock other sections
+                    rewriteBtn.disabled = false;
+                    questionsBtn.disabled = false;
+                    document.getElementById('rewrite-empty').style.display = 'none';
+                    document.getElementById('interview-empty').style.display = 'none';
+                    document.getElementById('status-badge').style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Analysis failed: ' + err.message);
+                document.getElementById('loading-spinner').style.display = 'none';
+                document.getElementById('placeholder-text').style.display = 'block';
+            } finally {
+                analyzeBtn.textContent = 'Start AI Analysis';
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        function displayResults(data) {
+            document.getElementById('results-placeholder').style.display = 'none';
+            document.getElementById('results-content').style.display = 'block';
+            document.getElementById('ai-feedback-card').style.display = 'block';
+
+            animateScore('match-circle', data.match_score);
+            animateScore('ats-circle', data.ats_score);
+
+            document.getElementById('resume-skills').innerHTML = data.resume_skills.map(s => `<span class="skill-tag">${s}</span>`).join('');
+            document.getElementById('missing-skills').innerHTML = data.missing_skills.map(s => `<span class="skill-tag" style="background: rgba(239,68,68,0.1); color: #f87171;">${s}</span>`).join('') || 'None!';
+            document.getElementById('ai-feedback').innerHTML = marked.parse(data.ai_feedback);
+        }
+
+        function animateScore(id, target) {
+            const el = document.getElementById(id);
+            let current = 0;
+            const duration = 1000;
+            const startTime = performance.now();
+            function update(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                current = progress * target;
+                el.setAttribute('data-score', Math.round(current));
+                el.style.setProperty('--progress', `${(current / 100) * 360}deg`);
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
+        // Feature: Rewrite
+        rewriteBtn.addEventListener('click', async () => {
+            rewriteBtn.textContent = 'Improving...';
+            const response = await fetch('/rewrite', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ resume_text: currentResumeText, jd_text: jdInput.value })
+            });
+            const data = await response.json();
+            document.getElementById('rewrite-container').style.display = 'block';
+            document.getElementById('rewritten-content').innerHTML = marked.parse(data.rewritten_content);
+            rewriteBtn.textContent = 'Generate Improved Version';
+        });
+
+        // Feature: Questions
+        questionsBtn.addEventListener('click', async () => {
+            questionsBtn.textContent = 'Generating...';
+            const response = await fetch('/generate_questions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ resume_text: currentResumeText, jd_text: jdInput.value })
+            });
+            const data = await response.json();
+            document.getElementById('questions-container').style.display = 'block';
+            document.getElementById('questions-content').innerHTML = marked.parse(data.questions);
+            questionsBtn.textContent = 'Generate Practice Questions';
+        });
+
+        // Feature: Download
+        downloadBtn.addEventListener('click', async () => {
+            downloadBtn.textContent = 'Downloading...';
+            const response = await fetch('/download_report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(lastAnalysisResult)
+            });
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Report.pdf';
+            a.click();
+            downloadBtn.textContent = 'Download PDF Report';
+        });
+
+        // Tracker Logic
+        async function fetchJobs() {
+            const response = await fetch('/jobs');
+            const jobs = await response.json();
+            document.getElementById('jobs-table-body').innerHTML = jobs.map(j => `
+                <tr>
+                    <td>${j.company}</td>
+                    <td>${j.role}</td>
+                    <td>${j.date}</td>
+                    <td>
+                        <select onchange="updateStatus(${j.id}, this.value)">
+                            <option value="Applied" ${j.status === 'Applied' ? 'selected' : ''}>Applied</option>
+                            <option value="Interview" ${j.status === 'Interview' ? 'selected' : ''}>Interview</option>
+                            <option value="Rejected" ${j.status === 'Rejected' ? 'selected' : ''}>Rejected</option>
+                            <option value="Offer" ${j.status === 'Offer' ? 'selected' : ''}>Offer</option>
+                        </select>
+                    </td>
+                    <td><button onclick="deleteJob(${j.id})" style="color: var(--danger); background: none; border: none; cursor: pointer;">Delete</button></td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('job-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await fetch('/jobs', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ company: document.getElementById('comp-name').value, role: document.getElementById('role-name').value, status: document.getElementById('job-status').value })
+            });
+            e.target.reset();
+            fetchJobs();
+        });
+
+        window.updateStatus = async (id, status) => {
+            await fetch(`/jobs/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
+        };
+
+        window.deleteJob = async (id) => {
+            if (confirm('Delete?')) { await fetch(`/jobs/${id}`, { method: 'DELETE' }); fetchJobs(); }
+        };
+
+        fetchJobs();
+    </script>
+</body>
+
+</html>
