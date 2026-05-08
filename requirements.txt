@@ -1,0 +1,9 @@
+flask
+pdfplumber
+scikit-learn
+nltk
+pandas
+google-generativeai
+python-dotenv
+flask-sqlalchemy
+fpdf2
